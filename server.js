@@ -28,7 +28,7 @@ mongoose.connect(dbUrl, (err) => {
 // ---------------------------------------- ROUTES ----------------------------------------- //
 
 // Route to access user credentials
-app.route("/api/user/:telegramId")
+app.route("/api/user/:telegramId?")
     // Get user details 
     .get((req, res) => {
         User.findOne({ telegramId: req.params.telegramId }, (err, user) => {
