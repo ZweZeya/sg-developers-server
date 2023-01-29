@@ -20,8 +20,10 @@ const userSchema = new Schema({
     },
     contacts: {
         private: {
-            phone: Number,
-            email: String,
+            phone: {
+                type: Number,
+                required: true,
+            },
         },
         public: {
             linkedin: String,
