@@ -19,13 +19,13 @@ const userSchema = new Schema({
         required: true,
     },
     contacts: {
-        private: {
+        personal: {
             phone: {
                 type: Number,
                 required: true,
             },
         },
-        public: {
+        universal: {
             linkedin: String,
             github: String,
         },
