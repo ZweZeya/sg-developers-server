@@ -12,11 +12,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-app.use((error, req, res, next) => {
-    console.log(error);
-    res.status(error.status || 500).json({ message: `Error: ${error.message || "Something went wrong!"}` });
- });
-
 // ---------------------------------------- DATABASE ----------------------------------------- //
 // Database collections
 const User = require("./models/users");
@@ -43,7 +38,8 @@ app.route("/api/user/:telegramId?")
     })
     // Create new user
     .post(async (req, res) => {
-        const { name, age, education, description, contacts, telegramId } = req.body;
+        console.log(req.body)
+        const { name, age, education, description, contacts, telegramId } = req.body.user;
         const user = new User({
             name,
             age,
@@ -54,15 +50,16 @@ app.route("/api/user/:telegramId?")
         });
         try {
             await user.save();
-            res.status(201).json({ message: "Created new user successfully" });
+            return res.status(201).json({ message: "Created new user successfully" });
         } 
         catch (err) {
-            return next(err);
+            console.log(err.message)
+            return res.status(500).json({ message: "Failure to register new user" });
         }
     })
     // Update user details
     .patch(async (req, res) => {
-        const { name, age, education, description, contacts, telegramId } = req.body;
+        const { name, age, education, description, contacts, telegramId } = req.body.user;
         try {
             const user = await User.findOne({ telegramId: telegramId });
             user.name = name;
@@ -71,10 +68,11 @@ app.route("/api/user/:telegramId?")
             user.description = description;
             user.contacts = contacts;
             await user.save();
-            res.status(200).json({ message: "Edited user successfully" });
+            return res.status(200).json({ message: "Edited user successfully" });
         } 
         catch (err) {
-            return next(err);
+            console.log(err.message)
+            return res.status(500).json({ message: "Failure to edit user" });
         }
     })
     // Delete user
@@ -82,14 +80,14 @@ app.route("/api/user/:telegramId?")
         try {
             const user = await User.findById(req.params.telegramId);
             if (!user) {
-                res.status(500).json({ message: "User does not exist" });
-                return;
-            }
-
+                return res.status(500).json({ message: "User does not exist" });
+            };
             await User.findByIdAndDelete(req.params.telegramId);
+            return res.status(200).json({ message: "User successfully deleted" })
         } 
         catch (err) {
-            return next(err);
+            console.log(err.message)
+            return res.status(500).json({ message: "Failure to delete user" });
         }
     });
 
