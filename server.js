@@ -78,11 +78,11 @@ app.route("/api/user/:telegramId?")
     // Delete user
     .delete(async (req, res) => {
         try {
-            const user = await User.findById(req.params.telegramId);
+            const user = await User.findOne({ telegramId: req.params.telegramId });
             if (!user) {
                 return res.status(500).json({ message: "User does not exist" });
             };
-            await User.findByIdAndDelete(req.params.telegramId);
+            await User.deleteOne({ telegramId: req.params.telegramId });
             return res.status(200).json({ message: "User successfully deleted" })
         } 
         catch (err) {
