@@ -98,10 +98,12 @@ app.route("/api/project/")
     })
 
     .post(async (req, res) => {
-        const { name, description } = req.body.project;
+        console.log(req.body)
+        const { name, description, createdBy } = req.body.project;
         const project = new Project.model({
             name,
             description,
+            createdBy,
         });
         try {
             await project.save();
