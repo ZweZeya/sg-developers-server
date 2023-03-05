@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // ---------------------------------------- DATABASE ----------------------------------------- //
 // Database collections
 const User = require("./models/users");
-const Projects = require("./models/projects");
+const Project = require("./models/projects");
 
 // Connection to mongoDB Atlas
 const dbUrl = `mongodb+srv://ZweZeya:${process.env.DB_PASSWORD}@sgdevelopers.qwrknrr.mongodb.net/TelegramDB?retryWrites=true&w=majority`;
@@ -30,7 +30,7 @@ mongoose.connect(dbUrl, (err) => {
 app.route("/api/user/:telegramId?")
     // Get user details
     .get((req, res) => {
-        User.findOne({ telegramId: req.params.telegramId }, (err, user) => {
+        User.model.findOne({ telegramId: req.params.telegramId }, (err, user) => {
             if (err) throw err;
             if (!user) return res.status(401).send("Unregistered user");
             else return res.status(200).send(user);
@@ -40,7 +40,7 @@ app.route("/api/user/:telegramId?")
     .post(async (req, res) => {
         console.log(req.body)
         const { name, age, education, description, contacts, telegramId } = req.body.user;
-        const user = new User({
+        const user = new User.model({
             name,
             age,
             education,
@@ -61,7 +61,7 @@ app.route("/api/user/:telegramId?")
     .patch(async (req, res) => {
         const { name, age, education, description, contacts, telegramId } = req.body.user;
         try {
-            const user = await User.findOne({ telegramId: telegramId });
+            const user = await User.model.findOne({ telegramId: telegramId });
             user.name = name;
             user.age = age;
             user.education = education;
@@ -78,11 +78,11 @@ app.route("/api/user/:telegramId?")
     // Delete user
     .delete(async (req, res) => {
         try {
-            const user = await User.findOne({ telegramId: req.params.telegramId });
+            const user = await User.model.findOne({ telegramId: req.params.telegramId });
             if (!user) {
                 return res.status(500).json({ message: "User does not exist" });
             };
-            await User.deleteOne({ telegramId: req.params.telegramId });
+            await User.model.deleteOne({ telegramId: req.params.telegramId });
             return res.status(200).json({ message: "User successfully deleted" })
         } 
         catch (err) {
@@ -90,6 +90,29 @@ app.route("/api/user/:telegramId?")
             return res.status(500).json({ message: "Failure to delete user" });
         }
     });
+
+// Route to access project information
+app.route("/api/project/")
+    .get((req, res) => {
+
+    })
+
+    .post(async (req, res) => {
+        const { name, description } = req.body.project;
+        const project = new Project.model({
+            name,
+            description,
+        });
+        try {
+            await project.save();
+            return res.status(201).json({ message: "Created new project successfully" });
+        }
+        catch (err) {
+            console.log(err.message)
+            return res.status(500).json({ message: "Failure to create new project" });
+        }
+    })
+
 
 // Run server
 app.listen(PORT, () => {

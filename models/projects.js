@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const User = require('./users')
 
 const projectSchema = new Schema({
     name: {
@@ -10,7 +11,10 @@ const projectSchema = new Schema({
         type: String,
         required: true,
     },
-    createdBy: String,
+    createdBy: User.schema,
 });
 
-module.exports = mongoose.model('Project', projectSchema);
+module.exports = {
+    model: mongoose.model('Project', projectSchema),
+    schema: projectSchema,
+};
