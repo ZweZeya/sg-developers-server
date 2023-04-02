@@ -38,7 +38,7 @@ app.route("/api/user/:telegramId?")
     })
     // Create new user
     .post(async (req, res) => {
-        console.log(req.body)
+        // console.log(req.body)
         const { name, age, education, description, contacts, telegramId } = req.body.user;
         const user = new User.model({
             name,
@@ -98,7 +98,7 @@ app.route("/api/project/")
     })
 
     .post(async (req, res) => {
-        console.log(req.body)
+        // console.log(req.body)
         const { name, description, createdBy } = req.body.project;
         const project = new Project.model({
             name,
@@ -112,6 +112,17 @@ app.route("/api/project/")
         catch (err) {
             console.log(err.message)
             return res.status(500).json({ message: "Failure to create new project" });
+        }
+    })
+
+    .delete(async (req, res) => {
+        try {
+            await Project.model.deleteMany();
+            return res.status(200).json({ message: "Deleted all projects successfully" });
+        }
+        catch (err) {
+            console.log(err.message)
+            return res.status(500).json({ message: "Failure to delete all projects" });
         }
     })
 
