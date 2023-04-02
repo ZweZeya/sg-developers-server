@@ -92,7 +92,7 @@ app.route("/api/user/:telegramId?")
     });
 
 // Route to access project information
-app.route("/api/project/")
+app.route("/api/project/:id?")
     .get((req, res) => {
 
     })
