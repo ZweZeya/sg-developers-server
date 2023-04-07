@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const app = express();
-const { HOST, PORT } = process.env;
 
 // ---------------------------------------- MIDDLEWARE ----------------------------------------- //
 // parse application/x-www-form-urlencoded
@@ -136,5 +135,5 @@ app.route("/api/project/:id?")
 
 // Run server
 app.listen(PORT, () => {
-  console.log(`Bot server has started on http://${HOST}:${PORT}`);
+  console.log(`Bot server has started.`);
 });
