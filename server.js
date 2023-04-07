@@ -92,9 +92,16 @@ app.route("/api/user/:telegramId?")
     });
 
 // Route to access project information
-app.route("/api/project/")
-    .get((req, res) => {
-
+app.route("/api/project/:id?")
+    .get(async (req, res) => {
+        try {
+            const project = await Project.model.findById(req.params.id);
+            return res.status(200).json(project);
+        }
+        catch (err) {
+            console.log(err.message)
+            return res.status(404).json({ message: `Project ${req.params.id} does not exist` });
+        }
     })
 
     .post(async (req, res) => {
@@ -107,7 +114,7 @@ app.route("/api/project/")
         });
         try {
             await project.save();
-            return res.status(201).json({ message: "Created new project successfully" });
+            return res.status(201).json({ message: "Created new project successfully", project: project });
         }
         catch (err) {
             console.log(err.message)
